@@ -1,3 +1,4 @@
 # codingame
 
-drone.js[./drone.md] -> code for codingame game of drone !
+drone.js -> code for codingame game of drone !
+drone.md !
