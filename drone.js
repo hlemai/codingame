@@ -1,6 +1,6 @@
 
 /* Game Of Drone. Implémentation de hlemai
-  - tactic V9 : 
+  - tactic V9 : on priorise les zones que je gagne ou que le premier gagne
  */
 
 class MockConsole {
@@ -36,14 +36,14 @@ var EPSILON=0.01;
 var OPT_SEUILTARGET=4000; // seuil de distance pour prendre en compte un drone ennemi qui cible une zone
 var OPT_CONTINUE_MOVE=true; // pour un drone, si la zone que je cible fait partie de la cible, je la garde.
 var OPT_REPRIZE_ALWAYS=true;
+var OPT_LOOSEFACTOR=10;
 
 
 //tableau des zones (type Zone)
 var zones = new Array(Z);
-
-
 //tableau des tableau de drone (pour chaque joueur)
 var drones = new Array(P);
+var ranks = new Array(P);
 var tour = 0;
 var maxtour=200;
 var maxtourMooving=20;
@@ -160,11 +160,28 @@ class Zone {
     return total;
   }
 
-  getNotWinnableFactor() {
-    if(this.getMaxDist()>this.getOpponentMaxDist()) {
-      printErr("zone "+this.zone+" loose");
+  getLooseFactor() {
+    if(ranks[0].player== ID) {
+      // je gagne !
       return 1;
     }
+    if (this.ID === ID)
+      return 1;
+
+    var targetP=-1;
+    for (var p=0 ;p<P;p++) {
+      if(ranks[p].player === ID) {
+        targetP=p-1;
+        break;
+      }
+    }
+    if(this.ID != ranks[targetP].player)
+    //if(this.getMaxDist()>this.getOpponentMaxDist()) 
+    {
+      printErr("zone "+this.zone+" loose");
+      return OPT_LOOSEFACTOR;
+    }
+
     return 1;
   }
   getOpponentMaxDist() {
@@ -289,6 +306,22 @@ function printTarget () {
   }
 }
 
+function GetPlayersRank() {
+  var scores=new Array(P);
+  for(var p=0;p<P;p++) {
+    scores[p]={
+      "player":p,
+      "score":0
+    };
+  }
+  var ranks=new Array(P);
+  for(var z=0;z<Z;z++) {
+    scores[zones[z].ID].score++;
+  }
+  scores.sort( (sc1,sc2)=> sc2.score-sc1.score);
+  return scores;
+}
+
 /*
   fonction implémentatnt la tactique : reprioriser les zones
   
@@ -301,15 +334,16 @@ function printTarget () {
       Ou le maximum des déplacement -> cela favorise les zones que l'on peut gagner vite
       -> cas où le nombre de drone est supérieur 
   */
+
 function RepriorizeZone() {
   cons.printErr("======> Reprio");
   orderedzones = zones.slice();
   // reprioriser pour ceux qui ont le moins de zones à attaquer 
   //orderedzones.sort((z1, z2) => z1.getAttackCount() - z2.getAttackCount());
-  orderedzones.sort((z1, z2) => z1.getTotalDist() - z2.getTotalDist());
+  //orderedzones.sort((z1, z2) => z1.getTotalDist() - z2.getTotalDist());
   //orderedzones.sort((z1, z2) => z1.getTotalDist()*z1.getAttackCount() - z2.getTotalDist()*z1.getAttackCount());
   //orderedzones.sort((z1, z2) => z1.getMaxDist() - z2.getMaxDist());
-  //orderedzones.sort((z1, z2) => z1.getMaxDist()*z1.getNotWinnableFactor() - z2.getMaxDist()*z2.getNotWinnableFactor());
+  orderedzones.sort((z1, z2) => z1.getTotalDist()*z1.getLooseFactor() - z2.getTotalDist()*z2.getLooseFactor());
   for(var z=0;z<Z;z++) {
     printErr(" Z"+orderedzones[z].zone+" Drones :"+orderedzones[z].getAttackCount()+" Max : "+orderedzones[z].getMaxDist()+" Total : "+orderedzones[z].getTotalDist());
   }
@@ -379,6 +413,8 @@ while (true) {
       }
     }
   }
+  ranks=GetPlayersRank();
+
   //debug
   for(var p=0;p<P;p++){
     cons.printErr("P"+p);

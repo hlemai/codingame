@@ -56,9 +56,17 @@ Effort total et on s'autorise à quiter les zones qu'on gagne (max et pas max+1 
     prise en compte du temps (distance) que je vais mettre pour gagner vs temps que les autres mettent
     en prennant en compte celui qui ne gagne pas
     voir si on prend en compte ceux qui target la zone ou simplement les plus proches...
-    ceux qui target => ça marche pas pour l'instant
-- tactic V9
-    repartir de la V7, si plus de deux player, attaquer uniquement les drones gagné par le gagnant
+    ceux qui target => je n'utilisait pas la bonne fonction de "cout" -> distance 
+    Moins bien qu'en direct, faudra analyser quand il fait mieux et quand il fait moins bien
+    9/06
+    => factor 2 **232** .
+    => factor 5 : **189** 
+    => avec 1 : **231** aie
+    => avec 10
+- tactic V9 : (bien pour les match à 1)
+    repartir de la V7, 
+    si je perd  attaquer uniquement les drones gagné par le gagnant
+    si je gagne, laisser comme ça ...
 
 ## Autres idées & Todos
 
