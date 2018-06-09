@@ -36,7 +36,7 @@ var EPSILON=0.01;
 var OPT_SEUILTARGET=4000; // seuil de distance pour prendre en compte un drone ennemi qui cible une zone
 var OPT_CONTINUE_MOVE=true; // pour un drone, si la zone que je cible fait partie de la cible, je la garde.
 var OPT_REPRIZE_ALWAYS=true;
-var OPT_LOOSEFACTOR=10;
+var OPT_LOOSEFACTOR=5;
 
 
 //tableau des zones (type Zone)
@@ -181,7 +181,6 @@ class Zone {
       printErr("zone "+this.zone+" loose");
       return OPT_LOOSEFACTOR;
     }
-
     return 1;
   }
   getOpponentMaxDist() {
@@ -316,7 +315,8 @@ function GetPlayersRank() {
   }
   var ranks=new Array(P);
   for(var z=0;z<Z;z++) {
-    scores[zones[z].ID].score++;
+    if(zones[z].ID>=0)
+        scores[zones[z].ID].score++;
   }
   scores.sort( (sc1,sc2)=> sc2.score-sc1.score);
   return scores;
