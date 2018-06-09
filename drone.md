@@ -2,7 +2,7 @@
 
 Implémentation de game of Drone pour codingame. Code Javascript successif
 
-## Résultats 
+## Résultats
 
 résulats détaillé issu de la Tactic V7
 
@@ -26,50 +26,50 @@ Effort total et on s'autorise à quiter les zones qu'on gagne (max et pas max+1 
     à chaque tour, si je suis en positions sur des drones regarder si je gagne et si je suis seul
     si je ne gagne pas, aller à un endroit ou je peux gagner.
     si je gagne et que je suis seul aussi.
-    si je suis loin de mon obj, je fait un 
+    si je suis loin de mon obj, je fait un
     supermove -> je vais là où il y en a le moins avec un de plus pour gagner
 * League or
-  * tactic V5 : position 387->212/567. Prendre en compte la distance avec chaque zone. 
-    faire un super move si je suis inférieur à l'objectif 
+  * tactic V5 : position 387->212/567. Prendre en compte la distance avec chaque zone.
+    faire un super move si je suis inférieur à l'objectif
     on attend toujours que tous les drones ont atteint leur dest pour bouger
   * tactic V6 : 212 -> 263... Faire des supermove régulier
-    Plutôt que d'aller vers les zones où il y a actuellement des drones, 
+    Plutôt que d'aller vers les zones où il y a actuellement des drones,
     prendre en compte les mouvements en cours pour aller avec un +1 sur la zone concernée pour devance.
   * tactic V6 : 263 -> 330...  
     -> on ne change pas l'ordre des target à chaque fois. On ne le fait que si le nombre de drone sur zone est inférieur à D/2
     on ne calcule pas les drones qui pointent sur les zones... ça ne marche pas, à débugger !
     avec prise en compte des targets ? ->320
     correction de bugs sur les target -> 425 !!!
-    on  change l'ordre des target preque à chaque fois. Dès que j'ai un drone sur ZONE.. 
+    on  change l'ordre des target preque à chaque fois. Dès que j'ai un drone sur ZONE..
     ->  place 291
     on évite de faire des aller retours. si le drone cible une zone à atteindre on le laisse y aller
     -> place 402 !!!
-  * tactic V7 : 
+  * tactic V7 :
     on cible les zones qui demande le moins d'effort pour être gagnée.
     -> 297 avec le total effort !!!, 266 pour nbAttack x effort total
     -> parfois on est aborbé par une zone => on évite la zone ou il y a trop de drones...
     Actuellement, le totaldist est pas mal -> **188**
     => dans le nbtattack, si je gagne, ne pas envoyer +1 ? => **172** => mieux !!
-    tester le "total x nbattack" => **236**   
+    tester le "total x nbattack" => **236**
     => **165**
   * tactic V8
     prise en compte du temps (distance) que je vais mettre pour gagner vs temps que les autres mettent
     en prennant en compte celui qui ne gagne pas
     voir si on prend en compte ceux qui target la zone ou simplement les plus proches...
-    ceux qui target => je n'utilisait pas la bonne fonction de "cout" -> distance 
+    ceux qui target => je n'utilisait pas la bonne fonction de "cout" -> distance
     Moins bien qu'en direct, faudra analyser quand il fait mieux et quand il fait moins bien
     9/06
     => factor 2 **232** .
-    => factor 5 : **189** 
+    => factor 5 : **189**
     => avec 1 : **254** aie
     => avec 10
   * tactic V9 : (bien pour les match à 1)
-    repartir de la V7, 
+    repartir de la V7,
     si je perd  attaquer uniquement les drones gagné par le gagnant
     si je gagne, laisser comme ça ...
-    => loosefactor à 2 => **236** 
-    => loosefactor à 1 => **204?**
-    => loosefactor à 5 => 
+    => loosefactor à 2 => **236**
+    => loosefactor à 1 => **190**
+    => loosefactor à 5 =>
 
 ## Autres idées & Todos
 
@@ -109,11 +109,9 @@ Cas particulier avec 3 autres:
     Totaldistxattack 194 174 0 **191**
     Max 182 176 18 **193**
 
-Cas particulier avec 2 opposants : 
+Cas particulier avec 2 opposants :
 
     6 drones, 7 zones
     TotalDist  323 **422** 399
-    Totaldistxattack 181 **349** 514 
+    Totaldistxattack 181 **349** 514
     max : 341 **311** 414
-
-
