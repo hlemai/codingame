@@ -1,6 +1,6 @@
 
 /* Game Of Drone. Implémentation de hlemai
-  - tactic V9 : on priorise les zones que je gagne ou que le premier gagne
+  - tactic V10 : vitesse si pas beaucoup de drone, effort si beaucoup
  */
 
 class MockConsole {
@@ -36,8 +36,23 @@ var EPSILON=0.01;
 var OPT_SEUILTARGET=4000; // seuil de distance pour prendre en compte un drone ennemi qui cible une zone
 var OPT_CONTINUE_MOVE=true; // pour un drone, si la zone que je cible fait partie de la cible, je la garde.
 var OPT_REPRIZE_ALWAYS=true;
-var OPT_LOOSEFACTOR=5;
+var OPT_LOOSEFACTOR=10;
+var OPT_FOCUS1RSTFACTOR=1;
 
+var VITESSE_FOCUS_PREMIER=1;
+var VITESSE_PURE=2;
+var EFFORT_FACTORISE=3;
+var MODE=EFFORT_FACTORISE;
+
+/*
+  selection de la tactique en fonction du nombre de D et de P et de Z !
+*/
+
+if(D+P<Z)
+  MODE = VITESSE_PURE;
+else if (P<=2 || D<Z) {
+  OPT_LOOSEFACTOR=1;
+}
 
 //tableau des zones (type Zone)
 var zones = new Array(Z);
@@ -159,30 +174,59 @@ class Zone {
 
     return total;
   }
+  /*
+    Fonction de cout 
+    ----------------
+    Permet de classer les zones à atteindre par priorité
+    */
 
-  getLooseFactor() {
-    if(ranks[0].player== ID) {
-      // je gagne !
-      return 1;
+  getCostFunction() {
+    var factor=1;
+    var loosable=false;
+    if (this.getMaxDist()>this.getOpponentMaxDist()){
+      loosable=true;
     }
-    if (this.ID === ID)
-      return 1;
-
-    var targetP=-1;
+    var playerMe=-1;
     for (var p=0 ;p<P;p++) {
       if(ranks[p].player === ID) {
-        targetP=p-1;
+        playerMe=p;
         break;
       }
     }
-    if(this.ID != ranks[targetP].player)
-    //if(this.getMaxDist()>this.getOpponentMaxDist()) 
-    {
-      printErr("zone "+this.zone+" loose");
-      return OPT_LOOSEFACTOR;
-    }
-    return 1;
+    if(loosable && MODE==EFFORT_FACTORISE )
+      factor *= OPT_LOOSEFACTOR;
+
+    if(playerMe>=2) {
+      //je suis au mieux 3ième => aggressif
+      if(this.ID != ranks[0].player)
+        factor *= OPT_FOCUS1RSTFACTOR;
+     } 
+     /* 
+     else {
+     //si c'est ma zone
+     if (this.ID === ID)
+       factor=1;
+     }
+     */
+
+     var cost=1.0;
+     //vitesse pure
+     switch (MODE) {
+        case VITESSE_PURE:
+          cost=this.getMaxDist();
+          break;
+
+        case EFFORT_FACTORISE :
+          cost=factor*this.getTotalDist();
+          break;
+        
+        case VITESSE_FOCUS_PREMIER :
+          cost=factor * this.getMaxDist();
+          break;
+     }
+     return cost;
   }
+
   getOpponentMaxDist() {
     var max=0;
     for (var p=0; p<P; p++) {
@@ -313,37 +357,26 @@ function GetPlayersRank() {
       "score":0
     };
   }
-  var ranks=new Array(P);
   for(var z=0;z<Z;z++) {
     if(zones[z].ID>=0)
         scores[zones[z].ID].score++;
   }
   scores.sort( (sc1,sc2)=> sc2.score-sc1.score);
+  for (p=0;p<P;p++) {
+    printErr("Rank "+scores[p].player+ " zones "+ scores[p].score );
+  }
   return scores;
 }
 
 /*
-  fonction implémentatnt la tactique : reprioriser les zones
-  
-    -> tactic V5/ V6
-    on prend les zones dans l'ordre ou il y en a moins pour avoir une chance de couvrir le plus de zone, indépendament de l'effort pour gagner la zone.
-    -> tactique V7 
-      prendre les zones où il y a moins d'effort pour gagner. 
-      L'effort peut-être la quanté totale de déplacement pour que la zone soit gagner (cela prend en compte de ce fait le nombre de zone à déplacer )
-      -> cas où le nombre de drone est inférieur au nombre de zone
-      Ou le maximum des déplacement -> cela favorise les zones que l'on peut gagner vite
-      -> cas où le nombre de drone est supérieur 
+  fonction implémentatnt la tactique : reprioriser les zones selon la fonction de cout ci dessus
   */
 
 function RepriorizeZone() {
   cons.printErr("======> Reprio");
   orderedzones = zones.slice();
-  // reprioriser pour ceux qui ont le moins de zones à attaquer 
-  //orderedzones.sort((z1, z2) => z1.getAttackCount() - z2.getAttackCount());
-  //orderedzones.sort((z1, z2) => z1.getTotalDist() - z2.getTotalDist());
-  //orderedzones.sort((z1, z2) => z1.getTotalDist()*z1.getAttackCount() - z2.getTotalDist()*z1.getAttackCount());
-  //orderedzones.sort((z1, z2) => z1.getMaxDist() - z2.getMaxDist());
-  orderedzones.sort((z1, z2) => z1.getTotalDist()*z1.getLooseFactor() - z2.getTotalDist()*z2.getLooseFactor());
+  orderedzones.sort((z1, z2) => z1.getCostFunction() - z2.getCostFunction());
+
   for(var z=0;z<Z;z++) {
     printErr(" Z"+orderedzones[z].zone+" Drones :"+orderedzones[z].getAttackCount()+" Max : "+orderedzones[z].getMaxDist()+" Total : "+orderedzones[z].getTotalDist());
   }
@@ -413,7 +446,9 @@ while (true) {
       }
     }
   }
-  ranks=GetPlayersRank();
+
+  if(tour <10 || tour%30==1 )
+    ranks=GetPlayersRank();
 
   //debug
   for(var p=0;p<P;p++){

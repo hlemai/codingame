@@ -62,14 +62,26 @@ Effort total et on s'autorise à quiter les zones qu'on gagne (max et pas max+1 
     => factor 2 **232** .
     => factor 5 : **189**
     => avec 1 : **254** aie
-    => avec 10
+    => faut-il défavoriser les zones que je gagne ?
   * tactic V9 : (bien pour les match à 1)
     repartir de la V7,
     si je perd  attaquer uniquement les drones gagné par le gagnant
     si je gagne, laisser comme ça ...
     => loosefactor à 2 => **236**
     => loosefactor à 1 => **190**
-    => loosefactor à 5 =>
+    => loosefactor à 5 => **308**
+    ça marche pas mieux
+    Combinaison des 2 : si je perd beacoup, je vise le précédent, sinon, je ne joue que sur le facteur de loose/perte et je protège mes zones.
+  * tactic V10 : on sélectionne la vitesse ou l'effort en fonction du nombre de drone vs nombre de zones.
+    Si 2 joueurs, on se mets en "pure" -> les facteurs à 1
+    Visiblement le classement est pas top (c'est le nombre de zone à un instant t, trop agressif)
+    on le smooth en le calculant tous les 30 drones et que si je suis 3 ou 4 ième
+    => F10 -> **206**
+    => F1 -> **240**
+    changement de paramètres si peu de drones, vitesse, sinon optim
+    => F10 -> **209**
+    => F5 -> **203**
+    => F1 -> **260???**
 
 ## Autres idées & Todos
 
@@ -83,14 +95,34 @@ Peut-être pendre en compte le nombre de zone gagnante avant de re-bouger.
 
 Les drones qu'on ne sais pas positionner, les mettre au barycentre des zones
 
-### Analyse
+## Analyse
 
-Analyses TODO :
+### Analyses TODO
 
 * Comportement à 2 joueurs
 * Cas nb drone < nb zones
+  Dans ce cas, la tactique ne devrait pas cibler les autres joueurs mais les zones
+  -> tester la vitesse F1:436 F5:436 F10:248 (F10:2ieme:184)
 
-Cas particulier avec 3 autres:
+### analyse matchs perdus (2 sur 3, dernier sur 3, 3ou 4 sur 4)
+
+Nombre  | Place   | Zones   | Drones
+--------|---------|---------|-------
+4       | 3       | 8       | 8
+3       | 3       | 6       | 5
+4       | 3       | 8       | 7
+3       | 3       | 6       | 5
+3       | 3       | 6       | 9
+4       | 4       | 8       | 5
+4       | 4       | 8       | 3
+4       | 3       | 8       | 7
+3       | 1       | 6       | 9
+3       | 1       | 6       | 11
+4       | 1       | 8       | 9
+
+### analyse cas particuliers
+
+avec 3 autres:
 
     8 zones 5 drones
     Attack count : 497 268 500 **226**
@@ -115,3 +147,52 @@ Cas particulier avec 2 opposants :
     TotalDist  323 **422** 399
     Totaldistxattack 181 **349** 514
     max : 341 **311** 414
+
+Tactique V9 : Autre Cas particulier pour tester le loose factor avec 4 gus
+
+  série 1 : 8 zones & 11 drones
+    Facteur appliqué sur le fait d'attaquer le n-1
+      factor 1 : 378 303 457 **406**
+      factor 2 : 377 441 391 **331**
+      factor 5 : 417 371 398 **354**
+    Facteur appliqué sur la proba de gagner
+      factor 3 : 362 368 425 **389**
+      factor 10 : 353 378 378 **435**
+      factor 5 : 344 355 455 **390**
+      factor 5, sans défavoriser mes zones : 343 381 434 **404**
+      factor 5, sans défavoriser mes zones, et sans rien faire si je gagne : 231 436 444 **384**
+    Facteur appliqué en combinaison
+      factor 5 : 378 383 375 **408**
+      factor 2 : 399 386 401 **358** !! dernier
+      factor 3 : 335 456 382 **371** ! avant dernier
+      factor 10 : 371 366 385 **422**
+ série 2 : 8 zones 7 drones
+    Facteur appliqué en combinaison
+      factor 1 : 369 406 422 **465**
+      factor 10 : 550 383 328 **323**
+      factor 3 : 430 368 313 **453**
+      factor 5 : 635 240 344 **345**
+  série 3 : 8 zones 7 drones
+    Facteur appliqué en combinaison
+      factor 1 : 759 100 373 **307** ! avant dernier
+      factor 3 : 833 122 374 **214** ! avant dernier
+      factor 5 : 821 79 353 **290** ! avant dernier
+      factor 5, on cible le premier: 438 337 442 **322** !!  dernier
+      factor 10, on cible le premier: 444 279 359 **457**
+  série 4 : 8 zones 3 drones
+      factor 10, on cible le premier: 467 298 503 **228** !!! dernier
+      factor 1 : 465 286 394 **353** : avant dernier
+      factor 5 : 473 392 448 **180**
+      introduction des modes :
+  série 5 : 8 zones 3 drones
+      VITESSE_PURE (F1)
+        449 277 337 **436**
+      VITESSE_FOCUS_PREMIER :
+        F5 : 400 337 511 245
+        F10: 440 204 662 187
+        F2: 449 277 337 **436**
+  série 6 : 7 zones 3 drones
+      VITESSE_PURE (F1)
+        449 277 337 **436**
+      VITESSE_FOCUS_PREMIER :
+        F10 : 349 283 383 **328** ! avant dernier
