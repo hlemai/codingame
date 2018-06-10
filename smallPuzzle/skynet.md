@@ -1,4 +1,4 @@
-# Première partie de SKYNET 
+# Première partie de SKYNET
 
  pour apprendre le scala
 
@@ -49,8 +49,8 @@ V1 : on les classe dans l'ordre de ceux qui en on le plus
         var listNodeLinkedToExit=List[Node]()
         for(exit <- exitnodes){
             listNodeLinkedToExit ++=exit.linkedNodes
-        }        
-        // dans cette liste, je cherche les numéro qui apparaissent le plus 
+        }
+        // dans cette liste, je cherche les numéro qui apparaissent le plus
         var groupMap=listNodeLinkedToExit.groupBy(node=>node.num)
         var sortedMap=groupMap.toSeq.sortWith(_._2.length > _._2.length)
         val srcNodenum=sortedMap(0)._1

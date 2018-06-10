@@ -54,6 +54,7 @@ object PlayGround {
         for(exit <- exitnodes){
             listNodeLinkedToExit ++=exit.linkedNodes
         }
+        
         // dans cette liste, je cherche les numéro qui apparaissent le plus 
         var groupMap=listNodeLinkedToExit.groupBy(node=>node.num)
         var sortedMap=groupMap.toSeq.sortWith(_._2.length > _._2.length)
