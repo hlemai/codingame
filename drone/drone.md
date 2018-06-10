@@ -155,49 +155,49 @@ Cas particulier avec 2 opposants :
 
 Tactique V9 : Autre Cas particulier pour tester le loose factor avec 4 gus
 
-  série 1 : 8 zones & 11 drones
-    Facteur appliqué sur le fait d'attaquer le n-1
-      factor 1 : 378 303 457 **406**
-      factor 2 : 377 441 391 **331**
-      factor 5 : 417 371 398 **354**
-    Facteur appliqué sur la proba de gagner
-      factor 3 : 362 368 425 **389**
-      factor 10 : 353 378 378 **435**
-      factor 5 : 344 355 455 **390**
-      factor 5, sans défavoriser mes zones : 343 381 434 **404**
-      factor 5, sans défavoriser mes zones, et sans rien faire si je gagne : 231 436 444 **384**
-    Facteur appliqué en combinaison
-      factor 5 : 378 383 375 **408**
-      factor 2 : 399 386 401 **358** !! dernier
-      factor 3 : 335 456 382 **371** ! avant dernier
-      factor 10 : 371 366 385 **422**
- série 2 : 8 zones 7 drones
-    Facteur appliqué en combinaison
-      factor 1 : 369 406 422 **465**
-      factor 10 : 550 383 328 **323**
-      factor 3 : 430 368 313 **453**
-      factor 5 : 635 240 344 **345**
-  série 3 : 8 zones 7 drones
-    Facteur appliqué en combinaison
-      factor 1 : 759 100 373 **307** ! avant dernier
-      factor 3 : 833 122 374 **214** ! avant dernier
-      factor 5 : 821 79 353 **290** ! avant dernier
-      factor 5, on cible le premier: 438 337 442 **322** !!  dernier
-      factor 10, on cible le premier: 444 279 359 **457**
-  série 4 : 8 zones 3 drones
-      factor 10, on cible le premier: 467 298 503 **228** !!! dernier
-      factor 1 : 465 286 394 **353** : avant dernier
-      factor 5 : 473 392 448 **180**
-      introduction des modes :
-  série 5 : 8 zones 3 drones
-      VITESSE_PURE (F1)
-        449 277 337 **436**
-      VITESSE_FOCUS_PREMIER :
-        F5 : 400 337 511 245
-        F10: 440 204 662 187
-        F2: 449 277 337 **436**
-  série 6 : 7 zones 3 drones
-      VITESSE_PURE (F1)
-        449 277 337 **436**
-      VITESSE_FOCUS_PREMIER :
-        F10 : 349 283 383 **328** ! avant dernier
+    série 1 : 8 zones & 11 drones
+      Facteur appliqué sur le fait d'attaquer le n-1
+        factor 1 : 378 303 457 **406**
+        factor 2 : 377 441 391 **331**
+        factor 5 : 417 371 398 **354**
+      Facteur appliqué sur la proba de gagner
+        factor 3 : 362 368 425 **389**
+        factor 10 : 353 378 378 **435**
+        factor 5 : 344 355 455 **390**
+        factor 5, sans défavoriser mes zones : 343 381 434 **404**
+        factor 5, sans défavoriser mes zones, et sans rien faire si je gagne : 231 436 444 **384**
+      Facteur appliqué en combinaison
+        factor 5 : 378 383 375 **408**
+        factor 2 : 399 386 401 **358** !! dernier
+        factor 3 : 335 456 382 **371** ! avant dernier
+        factor 10 : 371 366 385 **422**
+    série 2 : 8 zones 7 drones
+        Facteur appliqué en combinaison
+          factor 1 : 369 406 422 **465**
+          factor 10 : 550 383 328 **323**
+          factor 3 : 430 368 313 **453**
+          factor 5 : 635 240 344 **345**
+      série 3 : 8 zones 7 drones
+        Facteur appliqué en combinaison
+          factor 1 : 759 100 373 **307** ! avant dernier
+          factor 3 : 833 122 374 **214** ! avant dernier
+          factor 5 : 821 79 353 **290** ! avant dernier
+          factor 5, on cible le premier: 438 337 442 **322** !!  dernier
+          factor 10, on cible le premier: 444 279 359 **457**
+      série 4 : 8 zones 3 drones
+          factor 10, on cible le premier: 467 298 503 **228** !!! dernier
+          factor 1 : 465 286 394 **353** : avant dernier
+          factor 5 : 473 392 448 **180**
+          introduction des modes :
+      série 5 : 8 zones 3 drones
+          VITESSE_PURE (F1)
+            449 277 337 **436**
+          VITESSE_FOCUS_PREMIER :
+            F5 : 400 337 511 245
+            F10: 440 204 662 187
+            F2: 449 277 337 **436**
+      série 6 : 7 zones 3 drones
+          VITESSE_PURE (F1)
+            449 277 337 **436**
+          VITESSE_FOCUS_PREMIER :
+            F10 : 349 283 383 **328** ! avant dernier
