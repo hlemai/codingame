@@ -14,15 +14,21 @@ class Node(number:Int) {
 
     def addLink(linkedNode:Node) {
         linkedNodes = linkedNodes ++ List[Node](linkedNode)
+        linkedNode.linkedNodes = linkedNode.linkedNodes ++ List[Node](this)
+    }
+
+    def removeNode(node:Node) {
+        linkedNodes = linkedNodes.filterNot(n => n.num==node.num)
+        node.linkedNodes=node.linkedNodes.filterNot(n =>n.num==this.num)
     }
 
     override def toString():String = {
         var res=num.toString()
         for(node <- linkedNodes) {
             res+=" ->"+node.num.toString()
-            if(isExit) res += " =>exit"
-            if(isSkynet) res += " =>SKY***"
         }
+        if(isExit) res += " =>exit"
+        if(isSkynet) res += " =>SKY***"
         res
     }
 }
@@ -30,6 +36,24 @@ class Node(number:Int) {
 object PlayGround {
     var nodes:Array[Node] = new Array(0)
     var currentSkyNet:Int = -1
+
+    def getCandidateToRemove():(Int,Int) = {
+        // je trouve skynet pret d'une exit, je le kill
+        for(node <-nodes){
+            if(node.isSkynet) {
+                val exitList = node.linkedNodes.filter(subnode=>subnode.isExit)
+                if(exitList.length>0)
+                    return (node.num, exitList(0).num)
+            }
+        }
+        //sinon je coupe le premier exit que je trouve
+        for(node<-nodes){
+            val exitList = node.linkedNodes.filter(subnode=>subnode.isExit)
+            if(exitList.length>0)
+                return (node.num, exitList(0).num)
+        }
+        return (0,1)
+    }
 
     def setExit(ei:Int) {
         nodes(ei).isExit=true
@@ -46,7 +70,6 @@ object PlayGround {
     def debug() {
         for (node <- nodes) {
             Console.err.println("Node "+node.toString())
-
         }
     }
 }
@@ -81,8 +104,10 @@ object Player extends App {
         // To debug: Console.err.println("debug messages...")
         PlayGround.debug()
         
-
         // Example: 0 1 are the indices of the nodes you wish to sever the link between
-        println("1 2")
+        var (src,dest) = PlayGround.getCandidateToRemove()
+        println(src.toString()+" "+dest.toString())
+        PlayGround.nodes(src).removeNode(nodes(dest))
+        //PlayGround.debug()
     }
 }
