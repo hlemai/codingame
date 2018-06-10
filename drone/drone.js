@@ -1,4 +1,3 @@
-
 /* Game Of Drone. Implémentation de hlemai
   - tactic V10 : vitesse si pas beaucoup de drone, effort si beaucoup
  */
