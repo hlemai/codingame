@@ -36,7 +36,7 @@ var EPSILON=0.01;
 var OPT_SEUILTARGET=4000; // seuil de distance pour prendre en compte un drone ennemi qui cible une zone
 var OPT_CONTINUE_MOVE=true; // pour un drone, si la zone que je cible fait partie de la cible, je la garde.
 var OPT_REPRIZE_ALWAYS=true;
-var OPT_LOOSEFACTOR=10;
+var OPT_LOOSEFACTOR=2;
 var OPT_FOCUS1RSTFACTOR=1;
 
 var VITESSE_FOCUS_PREMIER=1;
