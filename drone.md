@@ -15,7 +15,7 @@ Basé sur l'effort total x nbr de drones à mettre pour gagner (moins de risques
 Effort total et on s'autorise à quiter les zones qu'on gagne (max et pas max+1 sur les zones que je gagne).
 V9, V10 -> on essaie de mieux prioriser l'effort en fonction de qui peut gagner, ou faire un focus sur ceux qui gagnent...
 
-Tactic V10 -> on alterne entre vitesse et effort  
+Tactic V10 -> on alterne entre vitesse et effort  **187**
 
 ## Description des tactiques
 
@@ -85,7 +85,8 @@ Tactic V10 -> on alterne entre vitesse et effort
     => F10 -> **209**
     => F5 -> **203**
     => F1 -> **190** -> les facteurs sont désavantageux...
-    On essaie de prendre 2 drones de plus par zones pour voir... => 239 !
+    On essaie de prendre 2 drones de plus par zones pour voir... => **239** !
+    => F2 -> **188**
 
 ## Autres idées & Todos
 
