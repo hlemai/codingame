@@ -1,4 +1,4 @@
-# Première partie de SKYNET -> pour apprendre le scala.
+# Première partie de SKYNET -> pour apprendre le scala
 
 Algo très simple :
 Si Skynet est prêt à entrer, on coupe la branche, sinon on coupe les branches autour de l'exit pour ne pas rien faire.

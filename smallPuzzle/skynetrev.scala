@@ -1,5 +1,6 @@
 import math._
 import scala.util._
+import scala.collection.immutable.ListMap
 
 /**
  * Auto-generated code below aims at helping you parse
@@ -46,13 +47,18 @@ object PlayGround {
                     return (node.num, exitList(0).num)
             }
         }
-        //sinon je coupe le premier exit que je trouve
-        for(node<-nodes){
-            val exitList = node.linkedNodes.filter(subnode=>subnode.isExit)
-            if(exitList.length>0)
-                return (node.num, exitList(0).num)
+        //sinon je fait une liste des qui pointent sur un exit
+        val exitnodes=nodes.filter(nd=>nd.isExit)
+        // par exit, je cherche les noeud qui sont pointé par plusieurs exits.
+        var listNodeLinkedToExit=List[Node]()
+        for(exit <- exitnodes){
+            listNodeLinkedToExit ++=exit.linkedNodes
         }
-        return (0,1)
+        // dans cette liste, je cherche les numéro qui apparaissent le plus 
+        var groupMap=listNodeLinkedToExit.groupBy(node=>node.num)
+        var sortedMap=groupMap.toSeq.sortWith(_._2.length > _._2.length)
+        val srcNodenum=sortedMap(0)._1
+        return (srcNodenum,nodes(srcNodenum).linkedNodes.filter(subnode=>subnode.isExit)(0).num)
     }
 
     def setExit(ei:Int) {
@@ -107,7 +113,7 @@ object Player extends App {
         // Example: 0 1 are the indices of the nodes you wish to sever the link between
         var (src,dest) = PlayGround.getCandidateToRemove()
         println(src.toString()+" "+dest.toString())
-        PlayGround.nodes(src).removeNode(nodes(dest))
+        PlayGround.nodes(src).removeNode(PlayGround.nodes(dest))
         //PlayGround.debug()
     }
 }
