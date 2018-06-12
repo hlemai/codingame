@@ -39,13 +39,12 @@ object PlayGround {
     var currentSkyNet:Int = -1
 
     def getCandidateToRemove():(Int,Int) = {
+        
         // je trouve skynet pret d'une exit, je le kill
-        for(node <-nodes){
-            if(node.isSkynet) {
-                val exitList = node.linkedNodes.filter(subnode=>subnode.isExit)
-                if(exitList.length>0)
-                    return (node.num, exitList(0).num)
-            }
+        for(node <-nodes.filter(_.isSkynet)){            
+            val exitList = node.linkedNodes.filter(subnode=>subnode.isExit)
+            if(exitList.length>0)
+                return (node.num, exitList(0).num)
         }
         //sinon je fait une liste des qui pointent sur un exit
         val exitnodes=nodes.filter(nd=>nd.isExit)
@@ -54,7 +53,7 @@ object PlayGround {
         for(exit <- exitnodes){
             listNodeLinkedToExit ++=exit.linkedNodes
         }
-        
+
         // dans cette liste, je cherche les numéro qui apparaissent le plus 
         var groupMap=listNodeLinkedToExit.groupBy(node=>node.num)
         var sortedMap=groupMap.toSeq.sortWith(_._2.length > _._2.length)
@@ -74,10 +73,26 @@ object PlayGround {
         currentSkyNet=sky
     }
 
+    def removeLink(src:Int,dest:Int) {
+        nodes(src).removeNode(nodes(dest))
+    }
+
     def debug() {
         for (node <- nodes) {
             Console.err.println("Node "+node.toString())
         }
+    }
+
+    //calcule le nombre de pas entre 2 nodes -> attention les liens sont dans les deux Nodes...
+    //donc ça boucle !!
+    def dist2node(src:Int,dest:Int):Int = {
+        if(nodes(src).linkedNodes.filter(subnode=>subnode.num==dest).length>0) {
+            return 1;
+        }
+        for(node <- nodes(src).linkedNodes) {
+            return 1+dist2node(node.num,dest)
+        }
+        return 0
     }
 }
 
@@ -107,14 +122,13 @@ object Player extends App {
     while(true) {
         val si = readInt // The index of the node on which the Skynet agent is positioned this turn
         PlayGround.setSkyNet(si)
-        // Write an action using println
-        // To debug: Console.err.println("debug messages...")
-        PlayGround.debug()
         
+        Console.err.println("DIST2NODE"+PlayGround.dist2node(si,PlayGround.nodes.filter(_.isExit)(0).num).toString())
+        PlayGround.debug()        
         // Example: 0 1 are the indices of the nodes you wish to sever the link between
         var (src,dest) = PlayGround.getCandidateToRemove()
         println(src.toString()+" "+dest.toString())
-        PlayGround.nodes(src).removeNode(PlayGround.nodes(dest))
-        //PlayGround.debug()
+        PlayGround.removeLink(src,dest)
+        
     }
 }

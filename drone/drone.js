@@ -348,6 +348,7 @@ function printTarget () {
   }
 }
 
+
 function GetPlayersRank() {
   var scores=new Array(P);
   for(var p=0;p<P;p++) {

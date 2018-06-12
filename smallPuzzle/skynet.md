@@ -2,7 +2,7 @@
 
  pour apprendre le scala
 
-## 1ier épreuve
+## 1iere épreuve
 
 Algo très simple Pour la V1:
 Si Skynet est prêt à entrer, on coupe la branche, sinon on coupe les branches autour de l'exit pour ne pas rien faire.
