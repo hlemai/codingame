@@ -36,6 +36,7 @@ class Node(number:Int) {
 
 object PlayGround {
     var nodes:Array[Node] = new Array(0)
+    var lstReachedNode = List[Node]()
     var currentSkyNet:Int = -1
 
     def getCandidateToRemove():(Int,Int) = {
@@ -54,10 +55,17 @@ object PlayGround {
             listNodeLinkedToExit ++=exit.linkedNodes
         }
 
-        // dans cette liste, je cherche les numéro qui apparaissent le plus 
+        // dans cette liste, je cherche les numéro qui apparaissent le plus et je trie pour éliminer les plus proche de skynet
         var groupMap=listNodeLinkedToExit.groupBy(node=>node.num)
-        var sortedMap=groupMap.toSeq.sortWith(_._2.length > _._2.length)
-        val srcNodenum=sortedMap(0)._1
+        var sorterSeq=groupMap.filter(_._2.length>1).toSeq
+        if(sorterSeq.length>0)
+            sorterSeq=sorterSeq.sortWith( (n1,n2)=> dist2node(n1._1,currentSkyNet)<dist2node(n2._1,currentSkyNet) )
+        else
+            sorterSeq=groupMap.toSeq
+        for(vec <- sorterSeq ){
+            Console.err.println("node "+vec._1+" distance "+dist2node(vec._1,currentSkyNet))
+        }
+        val srcNodenum=sorterSeq(0)._1
         return (srcNodenum,nodes(srcNodenum).linkedNodes.filter(subnode=>subnode.isExit)(0).num)
     }
 
@@ -85,12 +93,25 @@ object PlayGround {
 
     //calcule le nombre de pas entre 2 nodes -> attention les liens sont dans les deux Nodes...
     //donc ça boucle !!
+    //on ne doit pas passer par des exits.
     def dist2node(src:Int,dest:Int):Int = {
+        lstReachedNode=List(nodes(src))
+        return dist2nodeImp(src,dest)
+    }
+    def dist2nodeImp(src:Int,dest:Int):Int = {
         if(nodes(src).linkedNodes.filter(subnode=>subnode.num==dest).length>0) {
             return 1;
         }
-        for(node <- nodes(src).linkedNodes) {
-            return 1+dist2node(node.num,dest)
+        else {
+            for(node <- nodes(src).linkedNodes if !node.isExit ) {
+                if(!(lstReachedNode contains node)){
+                    lstReachedNode ::= node;
+                    if(node.linkedNodes.filter(_.isExit).length == 0)
+                        return 1+dist2nodeImp(node.num,dest)
+                    else
+                        return dist2nodeImp(node.num,dest)
+                }
+            }
         }
         return 0
     }
@@ -123,7 +144,7 @@ object Player extends App {
         val si = readInt // The index of the node on which the Skynet agent is positioned this turn
         PlayGround.setSkyNet(si)
         
-        Console.err.println("DIST2NODE"+PlayGround.dist2node(si,PlayGround.nodes.filter(_.isExit)(0).num).toString())
+        //Console.err.println("DIST2NODE"+PlayGround.dist2node(si,PlayGround.nodes.filter(_.isExit)(0).num).toString())
         PlayGround.debug()        
         // Example: 0 1 are the indices of the nodes you wish to sever the link between
         var (src,dest) = PlayGround.getCandidateToRemove()

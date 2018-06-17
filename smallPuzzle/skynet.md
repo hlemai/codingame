@@ -58,4 +58,45 @@ V1 : on les classe dans l'ordre de ceux qui en on le plus
     }
 ```
 
-Autre technique => éliminer les liens les doubles liens plus proches de skynetnet.
+Autre technique => éliminer les liens les doubles liens plus proches de skynetnet. Les deux dernier cas de test ne passent pas... 
+
+```scala
+
+        // dans cette liste, je cherche les numéro qui apparaissent le plus et je trie pour éliminer les plus proche de skynet
+        var groupMap=listNodeLinkedToExit.groupBy(node=>node.num)
+        var sorterSeq=groupMap.filter(_._2.length>1).toSeq
+        if(sorterSeq.length>0)
+            sorterSeq=sorterSeq.sortWith( (n1,n2)=> dist2node(n1._1,currentSkyNet)<dist2node(n2._1,currentSkyNet) )
+        else
+            sorterSeq=groupMap.toSeq;
+        val srcNodenum=sorterSeq(0)._1
+        return (srcNodenum,nodes(srcNodenum).linkedNodes.filter(subnode=>subnode.isExit)(0).num)
+    }
+
+```
+
+Par contre le calcul de la distance ne doit pas prendre en compte les cas où je n'ai pas les choix.
+
+```scala
+    def dist2node(src:Int,dest:Int):Int = {
+        lstReachedNode=List(nodes(src))
+        return dist2nodeImp(src,dest)
+    }
+    def dist2nodeImp(src:Int,dest:Int):Int = {
+        if(nodes(src).linkedNodes.filter(subnode=>subnode.num==dest).length>0) {
+            return 1;
+        }
+        else {
+            for(node <- nodes(src).linkedNodes if !node.isExit ) {
+                if(!(lstReachedNode contains node)){
+                    lstReachedNode ::= node;
+                    if(node.linkedNodes.filter(_.isExit).length == 0)
+                        return 1+dist2nodeImp(node.num,dest)
+                    else
+                        return dist2nodeImp(node.num,dest)
+                }
+            }
+        }
+        return 0
+    }
+```
